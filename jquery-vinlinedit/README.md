@@ -10,6 +10,7 @@ principal attribute is that the editor's style is like vi.
 Requirements
 ------------
 This plugin requires this tow librairies (which are in the `lib` directory):
+
 - [jQuery](http://www.jquery.com)
 - [jsAsyncQueue](https://github.com/hagino3000/jsAsyncQueue/) (see [JavaScript: Synchroniser des événements asynchrones (fr)](http://www.d-sites.com/2012/03/20/javascript-synchroniser-des-evenements-asynchrones/) to see an example of use)
 
