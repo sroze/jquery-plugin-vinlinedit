@@ -108,7 +108,19 @@
 						 * 
 						 */
 						default:
-							new_lp_content += String.fromCharCode(e.charCode);
+							var appendString = '';
+							if (e.which == null) {
+								// old IE
+								appendString = String.fromCharCode(e.keyCode);
+							} else if (e.which != 0 && e.charCode != 0) {
+								// All others
+								appendString = String.fromCharCode(e.which);
+							} else {
+								// It's a special key
+								// We doesn't have something to do.
+							}
+							
+							new_lp_content += appendString;
 							break;
 							
 						}
