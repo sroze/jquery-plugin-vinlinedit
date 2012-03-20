@@ -1,0 +1,10 @@
+VINLINEDIT jQuery Plugin v1.0.0
+====
+Copyright (c) 2012 Samuel ROZE. Licenced under the GPLv3 license.
+
+Overview
+===
+Vinlinedit is a jQuery plugin that provide an inline edit for text spans. The
+principal attribute is that the editor's style is like vi.
+
+ 
