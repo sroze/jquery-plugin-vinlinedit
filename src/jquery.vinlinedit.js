@@ -15,25 +15,22 @@
 			
 			// A callback before keypress processing
 			// @var function(keypressEvent) which returns true if catch the event
-			calback_pre_keypress: null,
+			callback_pre_keypress: null,
 			
 			// A callback after keypress processing
 			// @var function(keypressEvent)
-			calback_post_keypress: null
+			callback_post_keypress: null
 		}, options);
 		
 		// For each element, add features.
 		return this.each(function(){
 			var span = $(this).attr('tabindex', '0').focus();
 			var rcc_id = null;
+			var initial_content = span.text();
 			
 			// Init required Async Queue to sync
 			// the keyboard events.
 			var queue = new AsyncQueue({name : 'keyboard-events'});
-			
-			// Create the needed html
-			var initial_content = span.text();
-			span.html('<pre><span class="prefix">'+settings.prefix+'</span><span class="lp">'+initial_content+'</span><span class="cursor"> </span><span class="ln"></span></pre>');
 			
 			// Toogle the cursor color.
 			var initToggleCursorColor = function () {
@@ -46,13 +43,32 @@
 				}, 650);
 			};
 			
+			// Create all functions.
+			var functions = {
+				// Add clear function
+				clear: function (content) {
+					if (content == null || content == undefined) {
+						content = initial_content;
+					}
+					
+					span.html('<pre><span class="prefix">'+settings.prefix+'</span><span class="lp">'+content+'</span><span class="cursor"> </span><span class="ln"></span></pre>');
+				},
+				// Get content function
+				getContent: function () {
+					return $('span.lp', span).text() + $('span.cursor').text() + $('span.ln').text();
+				}
+			};
+			
+			// Store the function object as data of DOM element.
+			$(this).data('vinlinedit', functions);
+			
 			// Add keyboard events
 			span.keypress(function (e) {
 				// Synchronous call of the event trigger
 				queue.push({
 					fn: function (e) {
 						// Call the pre operating callback
-						if (typeof settings.calback_pre_keypress == "function" && settings.calback_pre_keypress(e)) {
+						if (typeof settings.callback_pre_keypress == "function" && settings.callback_pre_keypress(e, span.data('vinlinedit'))) {
 							return;
 						}
 						
@@ -134,15 +150,16 @@
 						initToggleCursorColor();
 						
 						// Call the post operating callback
-						if (typeof settings.calback_post_keypress == "function") {
-							settings.calback_post_keypress(e);
+						if (typeof settings.callback_post_keypress == "function") {
+							settings.callback_post_keypress(e, span.data('vinlinedit'));
 						}
 					},
 			        args: [e]
 				});
 			});
 			
-			// Lunch inits
+			// Init the editor
+			functions.clear(initial_content);
 			initToggleCursorColor();
 		});
 	};
