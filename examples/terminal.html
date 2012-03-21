@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>jQuery Vinlinedit Plugin</title>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+    <link href="../src/jquery.vinlinedit.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../lib/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="../lib/asyncqueue.js"></script>
+    <script type="text/javascript" src="../src/jquery.vinlinedit.js"></script>
+</head>
+<body>
+	<h2>Terminal example</h2>
+	<p>Enter your command line:</p>
+	<p style="background: #efefef; border: 1px solid #ccc; padding: 5px;">
+		<span class="vinlinedit">echo "it works"</span>
+	</p>
+	
+	<script type="text/javascript">
+	$(function(){
+		
+		// Initialize variables
+		var history = new Array();
+		var historyIndex = 0;
+		
+		/**
+		 * Return the command history.
+		 * 
+		 * @param integer Index of the command in history
+		 * @return string The command
+		 */
+		var getHistory = function (difference)
+		{
+			historyIndex += difference;
+			
+			if (historyIndex <= 0) {
+				historyIndex = 0;
+				return '';
+			} else if (history[historyIndex-1] == undefined) {
+				historyIndex -= difference;
+			}
+			return history[historyIndex-1]
+		};
+		
+		$('span.vinlinedit').vinlinedit({
+			prefix: 'you@server: ~ $ ',
+			callback_pre_keypress: function (e, fno) {
+				switch (e.keyCode) {
+				case 13: // Enter key
+					history.unshift(fno.getContent());
+					historyIndex = 0;
+					
+					fno.clear('');
+					break;
+				case 38: // Key Up
+					fno.clear(getHistory(1));
+					break;
+				case 40: // Key Down
+					fno.clear(getHistory(-1));
+					break;
+				default:
+					return false;
+					break;
+				}
+				
+				return true;
+			}
+		});
+	});
+	</script>
+	<p>Here, you can enter a command, then type <strong>Enter</strong>.<br />Which time you type <strong>Enter</strong>, the command is stored in a history that you can access using the <strong>Key Up</strong> et <strong>Key Down</strong>.</p>
+</body>
+</html>
